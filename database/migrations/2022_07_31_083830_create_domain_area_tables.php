@@ -20,7 +20,7 @@ class CreateDomainAreaTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('locations_buildings', function (Blueprint $table) {
+        Schema::create('buildings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('location_id');
             $table->integer('temperature')->default(0);
@@ -33,14 +33,14 @@ class CreateDomainAreaTables extends Migration
                 ->onDelete('restrict');
         });
 
-        Schema::create('locations_buildings_blocks', function (Blueprint $table) {
+        Schema::create('blocks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('building_id');
             $table->unsignedFloat('current_rent_price')->default(0);
             $table->timestamps();
             $table->foreign('building_id')
                 ->references('id')
-                ->on('locations_buildings')
+                ->on('buildings')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
         });
@@ -52,7 +52,6 @@ class CreateDomainAreaTables extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('contract_id')->after('id');
-
             $table->foreign('contract_id')
                 ->references('id')
                 ->on('contracts')
@@ -93,12 +92,12 @@ class CreateDomainAreaTables extends Migration
             $table->enum('status', ['reserved', 'busy']);
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->float('rent_price_on_booking_date');
+            $table->float('rent_price')->comment('on booking date');
             $table->timestamps();
 
             $table->foreign('block_id')
                 ->references('id')
-                ->on('locations_buildings_blocks')
+                ->on('blocks')
                 ->onUpdate('cascade')
                 ->onDelete('restrict');
 
@@ -124,8 +123,8 @@ class CreateDomainAreaTables extends Migration
             $table->dropColumn('contract_id');
         });
         Schema::dropIfExists('contracts');
-        Schema::dropIfExists('locations_buildings_blocks');
-        Schema::dropIfExists('locations_buildings');
+        Schema::dropIfExists('blocks');
+        Schema::dropIfExists('buildings');
         Schema::dropIfExists('locations');
     }
 }
