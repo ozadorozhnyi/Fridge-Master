@@ -47,4 +47,25 @@ class Location extends Model
             Booking::class, 'location_id', 'id'
         );
     }
+
+    /**
+     * Load locations with free blocks for now.
+     *
+     * @return mixed
+     */
+    public static function withFreeBlocks()
+    {
+        return self::select('locations.id', 'locations.name', 'locations.timezone')
+            ->selectRaw('COUNT(blocks.id) as free_blocks_count')
+            ->rightJoin('buildings', 'locations.id', '=', 'buildings.location_id')
+            ->rightJoin('blocks', 'buildings.id', '=', 'blocks.building_id')
+            ->whereNotIn('blocks.id', function($query) {
+                $query->select('busy_blocks.block_id')
+                    ->from('busy_blocks')
+                    ->whereIn('busy_blocks.status', ['busy', 'reserved']);
+            })
+            ->groupBy('locations.id')
+            ->orderBy('locations.id', 'ASC')
+            ->get();
+    }
 }
