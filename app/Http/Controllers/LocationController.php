@@ -18,4 +18,5 @@ class LocationController extends Controller
             (new LocationRepository())->allWithFreeBlocks()
         );
     }
+
 }

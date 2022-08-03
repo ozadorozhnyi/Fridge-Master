@@ -42,4 +42,10 @@ return [
         ],
         'contracts' => 5,
     ],
+    'block' => [
+        'volume' => 2,
+    ],
+    'booking' => [
+        'max_days' => 24,
+    ],
 ];

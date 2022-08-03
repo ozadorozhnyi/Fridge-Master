@@ -35,7 +35,6 @@ class Locations
                 return Location::withFreeBlocks();
             });
         }
-
         return static::$items;
     }
 }

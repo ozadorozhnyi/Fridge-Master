@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group([
     'prefix' => 'v1'
 ], function () {
-    Route::resource('locations', LocationController::class)->only(['index']);
+    /**
+     * Locations
+     */
+    Route::get('locations', [LocationController::class, 'index'])->name('locations');
+
+    /**
+     * Bookings
+     */
+    Route::post('bookings/calculate', [BookingController::class, 'calculate'])->name('booking.calculate');
+    Route::resource('bookings', BookingController::class)->only([
+        'index', 'store', 'show',
+    ]);
 });
